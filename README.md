@@ -14,7 +14,7 @@ A modern e-commerce store with a sleek, elegant UI and LLM-powered search capabi
 ## Project Structure
 
 - `server/` - Express.js backend with MCP (Model Context Protocol) implementation
-- `react-frontend/` - Modern React frontend with shadcn/ui components
+- `client/` - Modern React frontend with shadcn/ui components
 - `client/` - CLI client for testing the LLM agent
 - `shared/` - Shared types and interfaces
 
@@ -24,7 +24,7 @@ A modern e-commerce store with a sleek, elegant UI and LLM-powered search capabi
 2. Install dependencies:
    ```
    npm install
-   cd react-frontend && npm install
+   cd client && npm install
    ```
 3. Create a `.env` file in the server directory with your OpenAI API key:
    ```
