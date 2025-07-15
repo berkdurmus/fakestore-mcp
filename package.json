@@ -1,0 +1,40 @@
+{
+  "name": "fakestore-mcp",
+  "version": "1.0.0",
+  "main": "server/src/index.ts",
+  "scripts": {
+    "test": "ts-node --transpile-only tests/server.test.ts",
+    "server": "nodemon --exec ts-node server/src/index.ts",
+    "build": "tsc",
+    "client:dev": "cd client && npm run dev",
+    "client:build": "cd client && npm run build",
+    "dev:all": "concurrently \"npm run server\" \"npm run client:dev\"",
+    "web": "npm run dev:all"
+  },
+  "author": "berk durmus",
+  "license": "ISC",
+  "keywords": [],
+  "description": "",
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.0.13",
+    "@types/node-fetch": "^2.6.12",
+    "concurrently": "^9.2.0",
+    "node-fetch": "^2.7.0",
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@langchain/core": "^0.3.62",
+    "await-to-js": "^3.0.0",
+    "axios": "^1.10.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.0",
+    "express": "^5.1.0",
+    "langchain": "^0.3.29",
+    "openai": "^5.9.0",
+    "zod": "^3.25.76"
+  }
+}
