@@ -7,79 +7,6 @@ MCP Architecture & Flow: https://www.youtube.com/watch?v=Bwn2_TXMJMc
 Client UI Demo: https://youtu.be/gwFrvXRHWSI
 
 
-## Features
-
-- **Beautiful Chat Interface**: Inspired by ChatGPT but with an Apple/Linear.app aesthetic
-- **Real-time AI Thought Process**: See the actual LLM reasoning in real-time as it processes queries
-- **LLM-Powered Intelligence**: Natural language product search, filtering, and sorting
-- **Elegant Product Cards**: Clean, minimalist design showcasing product information
-- **Agent Details View**: See exactly how the AI processed your request
-- **Responsive Design**: Works beautifully on all devices
-
-## Screenshots
-<img width="1512" height="951" alt="Screenshot 2025-07-16 at 10 38 04" src="https://github.com/user-attachments/assets/f7f9d3b8-bcce-4411-9480-a1e23c544e29" />
-<img width="1512" height="963" alt="Screenshot 2025-07-16 at 10 38 30" src="https://github.com/user-attachments/assets/9607a04d-e2b7-40eb-9bbb-13e0a0799e2e" />
-<img width="1512" height="982" alt="Screenshot 2025-07-16 at 10 38 50" src="https://github.com/user-attachments/assets/67e956dc-c470-44cb-b99d-7fb52021cfdb" />
-<img width="1512" height="972" alt="Screenshot 2025-07-16 at 10 39 10" src="https://github.com/user-attachments/assets/8f61cde5-660a-40f9-9120-122612bc53e3" />
-
-
-## Project Structure
-
-- `server/` - Express.js backend with MCP (Model Context Protocol) implementation
-- `client/` - Modern React frontend with shadcn/ui components
-- `client/` - CLI client for testing the LLM agent
-- `shared/` - Shared types and interfaces
-
-## Setup
-
-1. Clone the repository
-2. Install dependencies:
-   ```
-   npm install
-   cd client && npm install
-   ```
-3. Create a `.env` file in the server directory with your OpenAI API key:
-   ```
-   OPENAI_API_KEY=your_openai_api_key
-   ```
-
-## Running the Application
-
-### Run Everything Together
-```
-npm run web
-```
-This will start both the backend server and the React frontend. Frontend will be accessible on: http://localhost:5173/
-
-
-## User Interface
-
-The application features a modern, sleek chat interface:
-
-1. **Welcome Screen**: Quick suggestion buttons to help users get started
-2. **Chat Messages**: Clean message bubbles with user and AI responses
-3. **Live Thought Process**: See the actual reasoning of the LLM in real-time as it analyzes your query
-4. **Product Cards**: Elegant cards showing product images, prices, and details
-5. **Agent Details**: Expandable dialog showing the LLM's thought process and API calls
-
-## Real-time Thought Process
-
-One of the most innovative features of this application is the ability to see the LLM's actual thought process in real-time as it works through your query. This provides unprecedented transparency into how the AI makes decisions, such as:
-
-- How it interprets user queries
-- What API endpoints it chooses to call
-- How it determines which filters to apply
-- The reasoning behind its product recommendations
-
-This feature is implemented through a streaming server-sent events (SSE) connection that pushes the LLM's thoughts to the frontend as soon as they're available, creating a more engaging and educational user experience.
-
-## Technologies
-
-- **Frontend**: React, TypeScript, shadcn/ui, Tailwind CSS, Lucide icons
-- **Backend**: Express.js, TypeScript, OpenAI GPT, LangChain
-- **Data**: FakeStore API for product information
-- **Streaming**: Server-Sent Events (SSE) for real-time thought process display
-
 ## Architecture Diagrams
 
 ### System Architecture
@@ -269,41 +196,147 @@ flowchart LR
         GetOptions["GET_AVAILABLE_OPTIONS"]
     end
     
-    subgraph "Data Models"
-        User["User"]
-        Product["Product"]
-        Cart["Cart"]
-        CartItem["CartItem"]
-        LoginRequest["LoginRequest"]
-        LoginResponse["LoginResponse"]
+    subgraph "Request Payloads"
+        LoginReq["username, password"]
+        GetProductsReq["filters, sort"]
+        GetProductReq["productId"]
+        AddToCartReq["productId, quantity"]
+        RemoveFromCartReq["cartId, productId"]
+        GetCartReq["userId"]
+        CreateCartReq["userId, products"]
+        UpdateCartReq["cartId, products"]
+        DeleteCartReq["cartId"]
+        GetStatsReq["period"]
+        GetOptionsReq["action"]
     end
     
-    MCPRequest --> |Contains| Action
-    Action --> Login & GetProducts & GetProduct & AddToCart & RemoveFromCart & GetCart & CreateCart & UpdateCart & DeleteCart & GetStoreStats & GetOptions
+    subgraph "Response Data Models"
+        User["User"]
+        Product["Product"]
+        Products["Product[]"]
+        Cart["Cart"]
+        CartItem["CartItem"]
+        Options["ActionOptions"]
+        Stats["StoreStats"]
+        Token["AuthToken"]
+    end
     
+    %% Core Protocol Flow
+    MCPRequest --> |Contains| ActionType
+    ActionType --> Login & GetProducts & GetProduct & AddToCart & RemoveFromCart & GetCart & CreateCart & UpdateCart & DeleteCart & GetStoreStats & GetOptions
     MCPResponse --> |Returns| ResponsePayload
     MCPError --> |Returns| ErrorDetails
     
-    Login --> LoginRequest
-    Login --> LoginResponse
+    %% Action to Payload Mapping
+    Login --> LoginReq
+    GetProducts --> GetProductsReq
+    GetProduct --> GetProductReq
+    AddToCart --> AddToCartReq
+    RemoveFromCart --> RemoveFromCartReq
+    GetCart --> GetCartReq
+    CreateCart --> CreateCartReq
+    UpdateCart --> UpdateCartReq
+    DeleteCart --> DeleteCartReq
+    GetStoreStats --> GetStatsReq
+    GetOptions --> GetOptionsReq
     
-    LoginResponse --> User
-    GetProducts --> Product
+    %% Response Mapping
+    Login --> Token
+    Token --> User
+    
+    GetProducts --> Products
     GetProduct --> Product
+    
+    AddToCart --> Cart
+    RemoveFromCart --> Cart
     GetCart --> Cart
+    CreateCart --> Cart
+    UpdateCart --> Cart
+    DeleteCart --> |success| Boolean
+    
+    GetStoreStats --> Stats
+    GetOptions --> Options
+    
     Cart --> CartItem
-    CartItem --> Product
+    CartItem --> |references| Product
     
     %% Define styling
     classDef protocol fill:#f0f8ff,stroke:#333,stroke-width:1px
     classDef actionType fill:#f9f9e0,stroke:#333,stroke-width:1px
+    classDef payload fill:#ffe6cc,stroke:#333,stroke-width:1px
     classDef dataModel fill:#e1f5e1,stroke:#333,stroke-width:1px
     
     %% Apply styling
-    class MCPRequest,MCPResponse,MCPError protocol
+    class MCPRequest,MCPResponse,MCPError,ActionType protocol
     class Login,GetProducts,GetProduct,AddToCart,RemoveFromCart,GetCart,CreateCart,UpdateCart,DeleteCart,GetStoreStats,GetOptions actionType
-    class User,Product,Cart,CartItem,LoginRequest,LoginResponse dataModel
+    class LoginReq,GetProductsReq,GetProductReq,AddToCartReq,RemoveFromCartReq,GetCartReq,CreateCartReq,UpdateCartReq,DeleteCartReq,GetStatsReq,GetOptionsReq payload
+    class User,Product,Products,Cart,CartItem,Options,Stats,Token,Boolean dataModel
 ```
+
+
+## Project Structure
+
+- `server/` - Express.js backend with MCP (Model Context Protocol) implementation
+- `client/` - Modern React frontend with shadcn/ui components
+- `client/` - CLI client for testing the LLM agent
+- `shared/` - Shared types and interfaces
+
+## Setup
+
+1. Clone the repository
+2. Install dependencies:
+   ```
+   npm install
+   cd client && npm install
+   ```
+3. Create a `.env` file in the server directory with your OpenAI API key:
+   ```
+   OPENAI_API_KEY=your_openai_api_key
+   ```
+
+## Running the Application
+
+### Run Everything Together
+```
+npm run web
+```
+This will start both the backend server and the React frontend. Frontend will be accessible on: http://localhost:5173/
+
+
+## User Interface
+
+The application features a modern, sleek chat interface:
+
+1. **Welcome Screen**: Quick suggestion buttons to help users get started
+2. **Chat Messages**: Clean message bubbles with user and AI responses
+3. **Live Thought Process**: See the actual reasoning of the LLM in real-time as it analyzes your query
+4. **Product Cards**: Elegant cards showing product images, prices, and details
+5. **Agent Details**: Expandable dialog showing the LLM's thought process and API calls
+
+## Real-time Thought Process
+
+One of the most innovative features of this application is the ability to see the LLM's actual thought process in real-time as it works through your query. This provides unprecedented transparency into how the AI makes decisions, such as:
+
+- How it interprets user queries
+- What API endpoints it chooses to call
+- How it determines which filters to apply
+- The reasoning behind its product recommendations
+
+This feature is implemented through a streaming server-sent events (SSE) connection that pushes the LLM's thoughts to the frontend as soon as they're available, creating a more engaging and educational user experience.
+
+## Technologies
+
+- **Frontend**: React, TypeScript, shadcn/ui, Tailwind CSS, Lucide icons
+- **Backend**: Express.js, TypeScript, OpenAI GPT, LangChain
+- **Data**: FakeStore API for product information
+- **Streaming**: Server-Sent Events (SSE) for real-time thought process display
+
+## Screenshots
+<img width="1512" height="951" alt="Screenshot 2025-07-16 at 10 38 04" src="https://github.com/user-attachments/assets/f7f9d3b8-bcce-4411-9480-a1e23c544e29" />
+<img width="1512" height="963" alt="Screenshot 2025-07-16 at 10 38 30" src="https://github.com/user-attachments/assets/9607a04d-e2b7-40eb-9bbb-13e0a0799e2e" />
+<img width="1512" height="982" alt="Screenshot 2025-07-16 at 10 38 50" src="https://github.com/user-attachments/assets/67e956dc-c470-44cb-b99d-7fb52021cfdb" />
+<img width="1512" height="972" alt="Screenshot 2025-07-16 at 10 39 10" src="https://github.com/user-attachments/assets/8f61cde5-660a-40f9-9120-122612bc53e3" />
+
 
 ## License
 
