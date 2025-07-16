@@ -38,24 +38,10 @@ https://www.youtube.com/watch?v=uhaueWv50xg
 
 ### Run Everything Together
 ```
-npm run dev:all
+npm run web
 ```
-This will start both the backend server and the React frontend.
+This will start both the backend server and the React frontend. Frontend will be accessible on: http://localhost:5173/
 
-### Backend Server Only
-```
-npm run start:server
-```
-
-### Frontend Only
-```
-npm run frontend:dev
-```
-
-### CLI Interface
-```
-npm run agent
-```
 
 ## User Interface
 
