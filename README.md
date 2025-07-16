@@ -2,6 +2,9 @@
 
 A modern e-commerce store with a sleek, elegant UI and LLM-powered search capabilities.
 
+## Product Demo (Client + MCP Architecture)
+https://www.youtube.com/watch?v=uhaueWv50xg
+
 ## Features
 
 - **Beautiful Chat Interface**: Inspired by ChatGPT but with an Apple/Linear.app aesthetic
