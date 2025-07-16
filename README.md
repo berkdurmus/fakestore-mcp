@@ -5,6 +5,7 @@ A modern e-commerce store with a sleek, elegant UI and LLM-powered search capabi
 ## Product Demo (Client + MCP Architecture)
 https://www.youtube.com/watch?v=uhaueWv50xg
 
+
 ## Features
 
 - **Beautiful Chat Interface**: Inspired by ChatGPT but with an Apple/Linear.app aesthetic
@@ -13,6 +14,13 @@ https://www.youtube.com/watch?v=uhaueWv50xg
 - **Elegant Product Cards**: Clean, minimalist design showcasing product information
 - **Agent Details View**: See exactly how the AI processed your request
 - **Responsive Design**: Works beautifully on all devices
+
+## Screenshots
+<img width="1512" height="951" alt="Screenshot 2025-07-16 at 10 38 04" src="https://github.com/user-attachments/assets/f7f9d3b8-bcce-4411-9480-a1e23c544e29" />
+<img width="1512" height="963" alt="Screenshot 2025-07-16 at 10 38 30" src="https://github.com/user-attachments/assets/9607a04d-e2b7-40eb-9bbb-13e0a0799e2e" />
+<img width="1512" height="982" alt="Screenshot 2025-07-16 at 10 38 50" src="https://github.com/user-attachments/assets/67e956dc-c470-44cb-b99d-7fb52021cfdb" />
+<img width="1512" height="972" alt="Screenshot 2025-07-16 at 10 39 10" src="https://github.com/user-attachments/assets/8f61cde5-660a-40f9-9120-122612bc53e3" />
+
 
 ## Project Structure
 
