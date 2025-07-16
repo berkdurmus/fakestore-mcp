@@ -3,7 +3,8 @@
 A modern e-commerce store with a sleek, elegant UI and LLM-powered search capabilities.
 
 ## Product Demo (Client + MCP Architecture)
-https://www.youtube.com/watch?v=uhaueWv50xg
+MCP Architecture & Flow: https://www.youtube.com/watch?v=Bwn2_TXMJMc
+Client UI Demo: https://youtu.be/gwFrvXRHWSI
 
 
 ## Features
